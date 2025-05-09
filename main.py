@@ -4,19 +4,29 @@ import cv2
 import util
 from sort.sort import *
 from util import get_car, read_license_plate, write_csv
+from dotenv import load_dotenv
+import os
+MODEL_ID = 'license-plate-recognition-rxg4e/11'
 
+
+load_dotenv()
+api_key = os.getenv("ROBOFLOW_API_KEY")
 
 results = {}
 
 mot_tracker = Sort()
 
 # load models
+# The model to detect cars 
 coco_model = YOLO('yolov8n.pt')
-license_plate_detector = YOLO('./models/license_plate_detector.pt')
-
+#license_plate_detector = YOLO('./models/license_plate_detector.pt')
+# The model to detect license plates
+license_plate_detector = get_model(MODEL_ID, api_key)
 # load video
 cap = cv2.VideoCapture('./sample.mp4')
 
+# the class ids of the vehicles to track
+# 2: car, 3: motorbike, 5: bus, 7: truck
 vehicles = [2, 3, 5, 7]
 
 # read frames
